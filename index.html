@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Seguridad</title>
+    <style>
+        /* Estilos para centrar el botón y que el video sea responsivo */
+        body { 
+            background-color: #000; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        #overlay { 
+            text-align: center; 
+            z-index: 10; 
+            color: white; 
+            padding: 20px;
+        }
+
+        h2 { font-size: 1.5rem; margin-bottom: 20px; }
+
+        button { 
+            padding: 15px 40px; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 8px; 
+            background-color: #007bff; 
+            color: white; 
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+
+        button:active { transform: scale(0.98); }
+
+        /* EL VIDEO SE ADAPTA AQUÍ */
+        video { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            object-fit: contain; /* Muestra el video completo sin importar el dispositivo */
+            background-color: black; 
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <h2>Verificación: Confirma que no eres un robot</h2>
+        <button onclick="activarBroma()">VERIFICAR</button>
+    </div>
+
+    <video id="videoBroma" loop playsinline>
+        <source src="https://files.catbox.moe/ej1g9q.mp4" type="video/mp4">
+        Tu navegador no soporta videos.
+    </video>
+
+    <script>
+        function activarBroma() {
+            const video = document.getElementById('videoBroma');
+            const overlay = document.getElementById('overlay');
+            
+            // 1. Ocultar el botón y mostrar el video
+            overlay.style.display = 'none';
+            video.style.display = 'block';
+            
+            // 2. Configurar volumen y reproducir
+            video.muted = false;
+            video.volume = 1.0; 
+            
+            // Intentar reproducir
+            let playPromise = video.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Si el video carga, pedimos pantalla completa
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                    }
+                }).catch(error => {
+                    console.log("Error al reproducir: " + error);
+                });
+            }
+
+            // 3. Bloqueo de salida (mensaje de confirmación)
+            window.onbeforeunload = function() {
+                return "¿Seguro que quieres salir?";
+            };
+        }
+    </script>
+</body>
+</html>
